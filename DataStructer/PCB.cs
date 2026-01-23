@@ -4,23 +4,61 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DS_OS.Exceptions;
 
 namespace DS_OS.DataStructer
 {
-    internal class PCB
+    internal class Pcb
     {
-        public int pid { get; private set; }
-        public string name { get; private set; }
-        public int  priority { get; set; }
-        public int  remaingTime { get; set; }
-        public State state { get; set; }
-        public bool needsFile { get; set; }
-        public string FiltePath { get; set; } = null;
+        public int Pid { get; private set; }
+        public string Name { get; private set; }
+        public int  Priority { get; set; }
+        public int  RemaningTime { get; set; }
+        public State State { get; set; }
+        public bool NeedsFile { get; set; }
+        public string FilePath { get; set; } = null;
         public WaitReason WaitReason { get; set; }      
-        public PCB Parent { get; set; }
-        public List<PCB> Children { get; set; }
+        public Pcb Parent { get; set; }
+        public List<Pcb> Children { get; set; }
         public int StartTime { get; set; } = -1;
         public int FinishTime { get; set; }
+
+        public Pcb(int pid, Pcb parent, int priority, int remaningTime)
+        {
+            this.Pid = pid;
+            this.Name = $"Process_{pid}";
+            Parent = parent ?? throw new InvalidParentException($"Parent cannot be null for process {pid}.");
+            this.Priority = priority;
+            this.RemaningTime = remaningTime;
+            State = State.New;
+            Children = new List<Pcb>();
+            StartTime = -1;
+            NeedsFile = false;
+        }
+
+        public Pcb(int pid, Pcb parent, int priority, int remaningTime, string filePath)
+        {
+            this.Pid = pid;
+            this.Name = $"Process_{pid}";
+            Parent = parent ?? throw new InvalidParentException($"Parent cannot be null for process {pid}.");
+            this.Priority = priority;
+            this.RemaningTime = remaningTime;
+            State = State.New;
+            Children = new List<Pcb>();
+            StartTime = -1;
+            this.FilePath = filePath;
+            NeedsFile = true;
+        }
+        
+
+        public static Pcb Create(int pid, Pcb parent, int priority, int remaningTime, string filtePath)  
+        {
+            return new Pcb(pid, parent, priority, remaningTime, filtePath);
+        }
+        public static Pcb Create(int pid, Pcb parent, int priority, int remaningTime)
+        {
+            return new Pcb(pid, parent, priority, remaningTime);
+        }
 
     }
 }

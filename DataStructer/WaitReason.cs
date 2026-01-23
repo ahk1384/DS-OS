@@ -2,6 +2,6 @@
 
 internal enum WaitReason
 {
-    FILE,
-    READY_LIMIT
+    File,
+    ReadyLimit
 }

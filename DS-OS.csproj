@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="DataStructer\Exceptions\" />
     <Folder Include="Engine\" />
     <Folder Include="FileManager\" />
     <Folder Include="DataBase\" />

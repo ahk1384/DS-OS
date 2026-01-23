@@ -2,8 +2,9 @@
 
 internal enum State
 {
-    READY,
-    RUNNING,
-    WAITING
+    New,
+    Ready,
+    Running,
+    Waiting
 
 }

@@ -8,7 +8,7 @@ using DS_OS.Exceptions;
 
 namespace DS_OS.DataStructer
 {
-    internal class Pcb
+    public class Pcb
     {
         public int Pid { get; private set; }
         public string Name { get; private set; }
@@ -19,11 +19,11 @@ namespace DS_OS.DataStructer
         public string FilePath { get; set; } = null;
         public WaitReason WaitReason { get; set; }      
         public Pcb Parent { get; set; }
-        public List<Pcb> Children { get; set; }
+        public Dictionary<int ,Pcb> Children { get; set; }
+        public DateTime EntryTime { get; set; }
         public int StartTime { get; set; } = -1;
         public int FinishTime { get; set; }
-
-        public Pcb(int pid, Pcb parent, int priority, int remaningTime)
+        private Pcb(int pid, Pcb parent, int priority, int remaningTime)
         {
             this.Pid = pid;
             this.Name = $"Process_{pid}";
@@ -31,12 +31,12 @@ namespace DS_OS.DataStructer
             this.Priority = priority;
             this.RemaningTime = remaningTime;
             State = State.New;
-            Children = new List<Pcb>();
+            Children = new Dictionary<int, Pcb>();
             StartTime = -1;
             NeedsFile = false;
         }
 
-        public Pcb(int pid, Pcb parent, int priority, int remaningTime, string filePath)
+        private Pcb(int pid, Pcb parent, int priority, int remaningTime, string filePath)
         {
             this.Pid = pid;
             this.Name = $"Process_{pid}";
@@ -44,7 +44,7 @@ namespace DS_OS.DataStructer
             this.Priority = priority;
             this.RemaningTime = remaningTime;
             State = State.New;
-            Children = new List<Pcb>();
+            Children = new Dictionary<int, Pcb>();
             StartTime = -1;
             this.FilePath = filePath;
             NeedsFile = true;

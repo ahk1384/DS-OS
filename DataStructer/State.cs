@@ -1,6 +1,6 @@
 ﻿namespace DS_OS.DataStructer;
 
-internal enum State
+public enum State
 {
     New,
     Ready,

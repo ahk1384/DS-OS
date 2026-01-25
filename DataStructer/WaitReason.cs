@@ -1,6 +1,6 @@
 ﻿namespace DS_OS.DataStructer;
 
-internal enum WaitReason
+public enum WaitReason
 {
     File,
     ReadyLimit

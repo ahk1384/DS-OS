@@ -8,13 +8,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="DataStructer\Exceptions\" />
-    <Folder Include="Engine\" />
-    <Folder Include="FileManager\" />
-    <Folder Include="DataBase\" />
-    <Folder Include="Parser\" />
-    <Folder Include="ProccesManager\" />
-  </ItemGroup>
-
 </Project>

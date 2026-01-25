@@ -3,5 +3,6 @@
 public enum WaitReason
 {
     File,
-    ReadyLimit
+    ReadyLimit,
+    IO
 }

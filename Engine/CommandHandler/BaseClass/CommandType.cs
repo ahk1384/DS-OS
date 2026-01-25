@@ -7,5 +7,6 @@ public enum CommandType
     PROCESSDELETE,
     FILECREATE,
     FILEDELETE,
+    DIRECTORYCREATE,
     SHUTDOWN
 }

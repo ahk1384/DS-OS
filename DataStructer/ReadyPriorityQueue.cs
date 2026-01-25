@@ -1,6 +1,6 @@
 ﻿namespace DS_OS.DataStructer;
 
-internal class ReadyPriorityQueue
+public class ReadyPriorityQueue
 {
     private readonly List<Pcb> _heap = new();
 

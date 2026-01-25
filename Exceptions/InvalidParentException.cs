@@ -1,7 +1,6 @@
 namespace DS_OS.Exceptions
 {
-
-    internal class InvalidParentException : Exception
+    public class InvalidParentException : Exception
     {
         public InvalidParentException() 
             : base("The specified parent process is invalid.")

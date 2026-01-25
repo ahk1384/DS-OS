@@ -29,6 +29,7 @@ public partial class CommandHandler: ICommandHandler
             { CommandType.FILECREATE, CreateFileHandler },
             { CommandType.FILEDELETE, DeleteFileHandler },
             { CommandType.PROCESSDELETE, DeleteProcessHandler },
+            { CommandType.DIRECTORYCREATE ,CreateDirectoryHandler},
             { CommandType.SHUTDOWN, ShutdownHandler }
         };
     }
@@ -56,7 +57,7 @@ public partial class CommandHandler: ICommandHandler
     {
         try
         {
-            Pcb? process = null;
+            Pcb? process;
             Pcb parent = _dB.GetPcb(int.Parse(command.Parameters["parent"]));
             
             if (command.Parameters.Keys.Count == 5)

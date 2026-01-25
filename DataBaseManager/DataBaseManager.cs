@@ -16,7 +16,7 @@ public class DataBaseManager(IFileManager fileManager) : IDataBaseManager
         _processTree.AddProcess(process.Parent,process);
         if (process.NeedsFile)
         {
-            if (_fileManager.IsExist(process.FilePath))
+            if (_fileManager.Exists(process.FilePath))
             {
                  return _ready.Enqueue(process);
             }

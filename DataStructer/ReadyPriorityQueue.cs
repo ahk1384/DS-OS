@@ -8,6 +8,8 @@ public class ReadyPriorityQueue
 
     public bool IsEmpty => _heap.Count == 0;
 
+    public int MaxSize { get; set; }
+
     public ReadyPriorityQueue()
     {
         _heap = new List<Pcb>();
@@ -50,6 +52,50 @@ public class ReadyPriorityQueue
         return true;
     }
 
+
+    public bool Remove(Pcb pcb)
+    {
+        if (pcb == null)
+            return false;
+
+        int index = -1;
+        for (int i = 0; i < _heap.Count; i++)
+        {
+            if (_heap[i].Pid == pcb.Pid)
+            {
+                index = i;
+                break;
+            }
+        }
+
+        if (index == -1)
+            return false;
+
+        int lastIndex = _heap.Count - 1;
+        _heap[index] = _heap[lastIndex];
+        _heap.RemoveAt(lastIndex);
+
+        if (index < _heap.Count)
+        {
+            HeapifyDown(index);
+            HeapifyUp(index);
+        }
+
+        return true;
+    }
+
+    public bool Contains(Pcb pcb)
+    {
+        if (pcb == null)
+            return false;
+
+        return _heap.Any(p => p.Pid == pcb.Pid);
+    }
+
+    public IEnumerable<Pcb> GetAll()
+    {
+        return _heap.ToList();
+    }
 
     private void HeapifyUp(int index)
     {
@@ -112,6 +158,15 @@ public class ReadyPriorityQueue
         }
     }
 
+    public bool IsFull()
+    {
+        if (Count >= MaxSize)
+        {
+            return true;
+        }
+
+        return false;
+    }
     private void Swap(int i, int j)
         {
             (_heap[i], _heap[j]) = (_heap[j], _heap[i]);

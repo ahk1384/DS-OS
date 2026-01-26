@@ -23,11 +23,13 @@ namespace DS_OS.DataStructer
         public DateTime EntryTime { get; set; }
         public int StartTime { get; set; } = -1;
         public int FinishTime { get; set; }
+        public int RunedQuantum { get; set; } = 0;
+
         private Pcb(int pid, Pcb parent, int priority, int remaningTime)
         {
             this.Pid = pid;
             this.Name = $"Process_{pid}";
-            Parent = parent ?? throw new InvalidParentException($"Parent cannot be null for process {pid}.");
+            Parent = parent;
             this.Priority = priority;
             this.RemaningTime = remaningTime;
             State = State.New;

@@ -2,9 +2,8 @@
 
 public interface IProcessExecutor
 {
-    bool Start();
+    void Start();
     bool End();
-    bool Stop();
-    bool Continue();
 
+    bool Config(int executionPerCycle, int quantumSize);
 }

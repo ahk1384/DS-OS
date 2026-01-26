@@ -34,7 +34,7 @@ public partial class CommandHandler: ICommandHandler
         };
     }
 
-    public bool Handle(Command command)
+    public async Task<bool> Handle(Command command)
     {
         try
         {

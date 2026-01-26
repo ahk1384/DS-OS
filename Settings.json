@@ -1,0 +1,8 @@
+{
+  "QuantumSize": 20,
+  "ExecutionPerCycle": 5,
+  "inputCommandLimit": 3,
+  "ReadyLimit": 5,
+  "waitingQueueLimit": -1,
+  "Prf": 1
+}

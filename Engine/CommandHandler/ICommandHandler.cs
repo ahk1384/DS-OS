@@ -4,5 +4,5 @@ namespace DS_OS.Engine.CommandHandler;
 
 public interface ICommandHandler
 {
-    bool Handle(Command command);
+    Task<bool> Handle(Command command);
 }

@@ -9,6 +9,16 @@ public class WaitingQueue
     private readonly Queue<Pcb> _FQueue;
     private readonly Queue<Pcb> _RQueue;
 
+    public WaitingQueue()
+    {
+        _FQueue = new Queue<Pcb>();
+        _RQueue = new Queue<Pcb>();
+    }
+
+    public int FileWaitingCount => _FQueue.Count;
+    public int ReadyLimitCount => _RQueue.Count;
+    public int TotalCount => _FQueue.Count + _RQueue.Count;
+
     public bool EnqueueFileWating(Pcb pcb)
     {
         if (pcb.State.Equals(State.Waiting) && pcb.WaitReason.Equals(WaitReason.File))
@@ -19,13 +29,11 @@ public class WaitingQueue
         else
         {
             throw new InvalidStateException();
-            return false;
         }
     }
 
     public bool EnqueueReadyLimit(Pcb pcb)
     {
-
         if (pcb.State.Equals(State.Waiting) && pcb.WaitReason.Equals(WaitReason.ReadyLimit))
         {
             _RQueue.Enqueue(pcb);
@@ -34,7 +42,6 @@ public class WaitingQueue
         else
         {
             throw new InvalidStateException();
-            return false;
         }
     }
 
@@ -52,6 +59,7 @@ public class WaitingQueue
     {
         return Remove(target,_FQueue);
     }
+    
     public bool RemoveFromReadyLimit(Pcb target)
     {
         return Remove(target,_RQueue);
@@ -59,65 +67,84 @@ public class WaitingQueue
 
     public bool RemoveFromAll(Pcb target)
     {
-        if (RemoveFromReadyLimit(target))
+        bool removedFromReady = false;
+        bool removedFromFile = false;
+
+        try
         {
-            return RemoveFromWaitingFile(target);
+            removedFromReady = RemoveFromReadyLimit(target);
         }
-        return false;
+        catch (ProcessNotFoundException)
+        {
+            // Process not in ready limit queue
+        }
+
+        try
+        {
+            removedFromFile = RemoveFromWaitingFile(target);
+        }
+        catch (ProcessNotFoundException)
+        {
+            // Process not in file waiting queue
+        }
+
+        return removedFromReady || removedFromFile;
     }
 
-    private bool Remove(Pcb target,Queue<Pcb> queue)
+    private bool Remove(Pcb target, Queue<Pcb> queue)
     {
         bool found = false;
-        int i = 0;
         int size = queue.Count;
-        while (i < size)
+        
+        for (int i = 0; i < size; i++)
         {
-            Pcb v1 = queue.Dequeue();
-            if (!v1.Pid.Equals(target.Pid))
+            Pcb current = queue.Dequeue();
+            if (!current.Pid.Equals(target.Pid))
             {
-                queue.Enqueue(v1);
+                queue.Enqueue(current);
             }
             else
             {
                 found = true;
             }
-            i++;
         }
 
         if (!found)
         {
-            throw new ProcessNotFoundException($"the {target.Pid} Not Found");
+            throw new ProcessNotFoundException($"Process {target.Pid} not found");
         }
+        
         return found;
     }
 
-    public bool isEmptyReadyLimit()
+    public bool IsEmptyReadyLimit()
     {
-        if (_RQueue.Count == 0)
-        {
-            return true;
-        }
-        return false;
+        return _RQueue.Count == 0;
     }
 
-    public bool isEmptyFileWaiting()
+    public bool IsEmptyFileWaiting()
     {
-        if (_FQueue.Count == 0)
-        {
-            return true;
-        }
-        return false;
+        return _FQueue.Count == 0;
     }
 
-    public bool isEmpty()
+    public bool IsEmpty()
     {
-        if (isEmptyFileWaiting())
-        {
-            return isEmptyReadyLimit();
-        }
-
-        return false;
+        return IsEmptyFileWaiting() && IsEmptyReadyLimit();
     }
 
+    public Pcb PeakWaitingFile()
+    {
+        return _FQueue.Peek();
+    }
+
+    public Pcb PeakReadyLimit()
+    {
+        return _RQueue.Peek();
+    }
+
+    public void Clear()
+    {
+        _FQueue.Clear();
+        _RQueue.Clear();
+    }
 }

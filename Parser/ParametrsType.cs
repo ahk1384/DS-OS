@@ -7,5 +7,8 @@ public enum ParametrsType
     PRIORITY,
     BURST,
     FILE,
-    PATH
+    NAME,
+    PATH,
+    SIZE,
+    FILEPATH
 }

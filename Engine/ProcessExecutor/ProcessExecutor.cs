@@ -44,6 +44,7 @@ public class ProcessExecutor(IDataBaseManager dataBaseManager, IProcessManager p
                 process.State = State.Running;
                 process.RemaningTime -= 1;
                 process.RunedQuantum += 1;
+                Console.WriteLine($"the process {process.Pid} is Executed");
                 if (process.RemaningTime > 0)
                 {
                     _pm.TimeOut(process);

@@ -2,8 +2,8 @@
 
 public interface ILogger
 {
-    bool Log(LongType message);
-    bool Log(LongType[] messages);
+    bool Log(string message);
+    bool Log(string[] messages);
     bool SaveLog();
     bool ClearLog();
 }

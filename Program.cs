@@ -57,7 +57,7 @@ namespace DS_OS
 
                 Console.WriteLine("Starting process executor...");
                 // Start the process executor on a background task so it doesn't block the REPL
-                Task executorTask = Task.Run(() => processExecutor.Start(), cts.Token);
+                Task executorTask ;
 
                 // Basic REPL for parsing commands
                 var parser = new QueryParser();
@@ -82,6 +82,10 @@ namespace DS_OS
                     try
                     {
                         line = Console.ReadLine();
+                        if (line == "start")
+                        {
+                            executorTask = Task.Run(() => processExecutor.Start(), cts.Token);
+                        }
                     }
                     catch (OperationCanceledException)
                     {
@@ -137,7 +141,7 @@ namespace DS_OS
                 catch { }
 
                 // Wait a short time for executor to stop
-                await Task.WhenAny(executorTask, Task.Delay(2000));
+                //await Task.WhenAny(executorTask, Task.Delay(2000));
                 Console.WriteLine("DS-OS shutdown complete.");
                 return 0;
             }

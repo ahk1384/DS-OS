@@ -275,7 +275,7 @@ public class DataBaseManager : IDataBaseManager
 
             process.State = State.Waiting;
             process.WaitReason = WaitReason.File;
-            _logger.Log(LongType.WATING_FILE);
+            _logger.Log(process.Pid + "  | " + nameof(LongType.WATING_FILE));
             return _waiting.EnqueueFileWating(process);
         }
         catch (Exception)
@@ -300,7 +300,7 @@ public class DataBaseManager : IDataBaseManager
 
             process.State = State.Waiting;
             process.WaitReason = WaitReason.ReadyLimit;
-            _logger.Log(LongType.WATING_READY_LIMT);
+            _logger.Log(process.Pid + "  | " + nameof(LongType.WATING_READY_LIMT));
             return _waiting.EnqueueReadyLimit(process);
         }
         catch (Exception)

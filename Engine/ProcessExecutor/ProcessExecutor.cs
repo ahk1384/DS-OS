@@ -15,7 +15,7 @@ public class ProcessExecutor(IDataBaseManager dataBaseManager, IProcessManager p
     private readonly IProcessManager _pm = processManager;
     private readonly IFileManager _fm = fileManager;
     private bool _runState = true;
-    private List<LongType> messages = new List<LongType>();
+    private List<string> messages = new List<string>();
     private int QuantumSize { get; set; }
     private int ExecutionPerCycle { get; set; }
 
@@ -60,13 +60,13 @@ public class ProcessExecutor(IDataBaseManager dataBaseManager, IProcessManager p
                     _db.DeleteProcess(process);
                     _pm.CheckReadyLimit();
                 }
-                messages.Add(LongType.EXECUTED);
+                messages.Add(process.Pid + "  | "+nameof(LongType.EXECUTED));
             }
             else
             {
                 if (process.WaitReason == WaitReason.File)
                 {
-                    messages.Add(LongType.WATING_FILE);
+                    messages.Add(process.Pid + "  | " + nameof(LongType.WATING_FILE));
                 }
             }
         }
@@ -94,7 +94,7 @@ public class ProcessExecutor(IDataBaseManager dataBaseManager, IProcessManager p
     {
         _runState = false;
         logger.SaveLog();
-        logger.Log(LongType.SHUTDOWN);
+        logger.Log(LongType.SHUTDOWN.ToString());
         return true;
     }
 

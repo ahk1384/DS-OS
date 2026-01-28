@@ -9,6 +9,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using DS_OS.Engine.CommandHandler;
+using DS_OS.Logger;
 
 namespace DS_OS
 {
@@ -20,9 +21,10 @@ namespace DS_OS
             
             // Create core components
             IFileManager fileManager = new FileManager.FileManager();
-            IDataBaseManager dataBaseManager = new DataBaseManager.DataBaseManager(fileManager);
+            ILogger logger = new Logger.Logger();
+            IDataBaseManager dataBaseManager = new DataBaseManager.DataBaseManager(fileManager, logger);
             IProcessManager processManager = new ProcessManager(dataBaseManager, fileManager);
-            IProcessExecutor processExecutor = new ProcessExecutor(dataBaseManager, processManager, fileManager);
+            IProcessExecutor processExecutor = new ProcessExecutor(dataBaseManager, processManager, fileManager,logger);
             ConfigureSettings settings = new ConfigureSettings(processManager, processExecutor, dataBaseManager);
             ICommandHandler handler = new CommandHandler(dataBaseManager, processManager, fileManager);
 

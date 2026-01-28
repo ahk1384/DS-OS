@@ -4,14 +4,18 @@ using DS_OS.Engine.ProccesManager;
 using DS_OS.Engine.ProcessExcuter;
 using DS_OS.FileManager;
 using System.Threading.Tasks;
+using DS_OS.Logger;
+
 namespace DS_OS.Engine.ProcessExecutor;
 
-public class ProcessExecutor(IDataBaseManager dataBaseManager, IProcessManager processManager,IFileManager fileManager) : IProcessExecutor
+public class ProcessExecutor(IDataBaseManager dataBaseManager, IProcessManager processManager,IFileManager fileManager, ILogger logger) : IProcessExecutor
 {
+    private readonly ILogger _logger = logger;
     private readonly IDataBaseManager _db = dataBaseManager;
     private readonly IProcessManager _pm = processManager;
     private readonly IFileManager _fm = fileManager;
     private bool _runState = true;
+    private List<LongType> messages = new List<LongType>();
     private int QuantumSize { get; set; }
     private int ExecutionPerCycle { get; set; }
 
@@ -26,11 +30,13 @@ public class ProcessExecutor(IDataBaseManager dataBaseManager, IProcessManager p
     {
         while (_runState)
         {
+            messages.Clear();
             for (int i = 0; i < ExecutionPerCycle; i++)
             {
                 Pcb? process = GetProcess();
                 Execute(process);
             }
+            logger.Log(messages.ToArray());
             Thread.Sleep(QuantumSize * 100);
         }
     }
@@ -44,15 +50,23 @@ public class ProcessExecutor(IDataBaseManager dataBaseManager, IProcessManager p
                 process.State = State.Running;
                 process.RemaningTime -= 1;
                 process.RunedQuantum += 1;
-                Console.WriteLine($"the process {process.Pid} is Executed");
                 if (process.RemaningTime > 0)
                 {
                     _pm.TimeOut(process);
                 }
                 else
                 {
+                    
                     _db.DeleteProcess(process);
                     _pm.CheckReadyLimit();
+                }
+                messages.Add(LongType.EXECUTED);
+            }
+            else
+            {
+                if (process.WaitReason == WaitReason.File)
+                {
+                    messages.Add(LongType.WATING_FILE);
                 }
             }
         }
@@ -79,6 +93,7 @@ public class ProcessExecutor(IDataBaseManager dataBaseManager, IProcessManager p
     public bool End()
     {
         _runState = false;
+        logger.SaveLog();
         return true;
     }
 

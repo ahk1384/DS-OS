@@ -3,6 +3,7 @@ using System.Net.NetworkInformation;
 using DS_OS.DataStructer;
 using DS_OS.Exceptions;
 using DS_OS.FileManager;
+using DS_OS.Logger;
 
 namespace DS_OS.DataBaseManager;
 
@@ -13,10 +14,11 @@ public class DataBaseManager : IDataBaseManager
     private readonly ReadyPriorityQueue _ready;
     private readonly ProcessTree _processTree;
     private readonly IFileManager _fileManager;
-
-    public DataBaseManager(IFileManager fileManager)
+    private readonly ILogger _logger;
+    public DataBaseManager(IFileManager fileManager, ILogger logger)
     {
         _fileManager = fileManager ?? throw new ArgumentNullException(nameof(fileManager));
+        _logger = logger;
         _waiting = new WaitingQueue();
         _ready = new ReadyPriorityQueue();
 
@@ -273,6 +275,7 @@ public class DataBaseManager : IDataBaseManager
 
             process.State = State.Waiting;
             process.WaitReason = WaitReason.File;
+            _logger.Log(LongType.WATING_FILE);
             return _waiting.EnqueueFileWating(process);
         }
         catch (Exception)
@@ -297,6 +300,7 @@ public class DataBaseManager : IDataBaseManager
 
             process.State = State.Waiting;
             process.WaitReason = WaitReason.ReadyLimit;
+            _logger.Log(LongType.WATING_READY_LIMT);
             return _waiting.EnqueueReadyLimit(process);
         }
         catch (Exception)

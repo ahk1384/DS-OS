@@ -48,6 +48,7 @@ namespace DS_OS
             try
             {
                 Console.WriteLine("Loading system settings...");
+                logger.ClearLog();
                 if (!settings.LoadSettings())
                 {
                     Console.WriteLine("Failed to load settings. Exiting."); 

@@ -6,6 +6,7 @@ public enum LongType
     WATING_FILE,
     WATING_READY_LIMT,
     TERMINATED,
-    ERROR
+    ERROR,
+    SHUTDOWN
 
 }

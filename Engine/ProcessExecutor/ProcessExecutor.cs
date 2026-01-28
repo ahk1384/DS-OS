@@ -36,7 +36,7 @@ public class ProcessExecutor(IDataBaseManager dataBaseManager, IProcessManager p
                 Pcb? process = GetProcess();
                 Execute(process);
             }
-            logger.Log(messages.ToArray());
+            _logger.Log(messages.ToArray());
             Thread.Sleep(QuantumSize * 100);
         }
     }
@@ -94,6 +94,7 @@ public class ProcessExecutor(IDataBaseManager dataBaseManager, IProcessManager p
     {
         _runState = false;
         logger.SaveLog();
+        logger.Log(LongType.SHUTDOWN);
         return true;
     }
 

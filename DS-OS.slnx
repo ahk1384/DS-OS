@@ -1,4 +1,5 @@
 <Solution>
   <Project Path="../DS-OS-Test/DS-OS-Test.csproj" Id="0bc8131e-d937-4403-8f79-db93b3ea33f5" />
+  <Project Path="../Logs/Logs.csproj" Id="ccc84f66-4954-4957-bf41-29990416b299" />
   <Project Path="DS-OS.csproj" />
 </Solution>

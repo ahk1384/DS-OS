@@ -21,10 +21,11 @@ namespace DS_OS
             
             // Create core components
             IFileManager fileManager = new FileManager.FileManager();
-            ILogger logger = new Logger.Logger();
+            ILogger logger = new Logger.ProcessLogger();
+            ILogger fileLogger = new FileLogger();
             IDataBaseManager dataBaseManager = new DataBaseManager.DataBaseManager(fileManager, logger);
             IProcessManager processManager = new ProcessManager(dataBaseManager, fileManager);
-            IProcessExecutor processExecutor = new ProcessExecutor(dataBaseManager, processManager, fileManager,logger);
+            IProcessExecutor processExecutor = new ProcessExecutor(dataBaseManager, processManager, fileManager,logger,fileLogger);
             ConfigureSettings settings = new ConfigureSettings(processManager, processExecutor, dataBaseManager);
             ICommandHandler handler = new CommandHandler(dataBaseManager, processManager, fileManager);
 

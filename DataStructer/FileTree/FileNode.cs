@@ -118,11 +118,18 @@ public class FileNode
             current = current.Parent;
         }
 
-        if (current?.IsRoot == true)
-            pathParts.Add(current.Name);
-
         pathParts.Reverse();
-        return string.Join("/", pathParts);
+        
+        // If root name is "/", prepend it; otherwise join with root name
+        if (current?.IsRoot == true)
+        {
+            if (current.Name == "/")
+                return "/" + string.Join("/", pathParts);
+            else
+                return current.Name + "/" + string.Join("/", pathParts);
+        }
+        
+        return "/" + string.Join("/", pathParts);
     }
 
     public bool Exists(string path)

@@ -189,6 +189,50 @@ public class FileManager : IFileManager
         }
     }
 
+    public IEnumerable<FileNode> GetAllFilesRecursive(string path)
+    {
+        lock (_lock)
+        {
+            try
+            {
+                var startNode = _fileTree.FindNode(path);
+                if (startNode == null)
+                    return Enumerable.Empty<FileNode>();
+
+                var results = new List<FileNode>();
+                CollectFilesRecursive(startNode, results);
+                return results;
+            }
+            catch (Exception)
+            {
+                return Enumerable.Empty<FileNode>();
+            }
+        }
+    }
+
+    private void CollectFilesRecursive(FileNode node, List<FileNode> results)
+    {
+        if (node == null)
+            return;
+
+        // Add files from current directory
+        if (node.IsDirectory && node.Children != null)
+        {
+            foreach (var child in node.Children.Values)
+            {
+                if (child.IsFile)
+                {
+                    results.Add(child);
+                }
+                else if (child.IsDirectory)
+                {
+                    // Recursively collect files from subdirectories
+                    CollectFilesRecursive(child, results);
+                }
+            }
+        }
+    }
+
     #endregion
 
     #region File/Directory Manipulation

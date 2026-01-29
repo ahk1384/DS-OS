@@ -1,4 +1,6 @@
-﻿namespace DS_OS.Logger;
+﻿using DS_OS.DataStructer;
+
+namespace DS_OS.Logger;
 
 public interface ILogger
 {
@@ -6,4 +8,5 @@ public interface ILogger
     bool Log(string[] messages);
     bool SaveLog();
     bool ClearLog();
+    void Log(IEnumerable<FileNode> getFiles);
 }

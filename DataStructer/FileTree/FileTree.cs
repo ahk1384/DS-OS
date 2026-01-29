@@ -12,7 +12,7 @@ public class FileTree
     {
         try
         {
-            var parentNode = FindParentNode(path);
+            var parentNode = FindNode(path);
             if (parentNode == null || parentNode.IsFile)
                 return false;
 
@@ -29,7 +29,7 @@ public class FileTree
     {
         try
         {
-            var parentNode = FindParentNode(path);
+            var parentNode = FindNode(path);
             if (parentNode == null || parentNode.IsFile)
                 return false;
 
@@ -47,16 +47,21 @@ public class FileTree
         try
         {
             if (string.IsNullOrWhiteSpace(path) || path == "/")
-                return false; // Cannot delete root
+                return false;
 
             var pathParts = SplitPath(path);
             if (pathParts.Length == 0)
                 return false;
 
-            var parentPath = string.Join("/", pathParts.Take(pathParts.Length - 1));
+            string parentPath;
+            if (pathParts.Length == 1)
+                parentPath = "/";
+            else
+                parentPath = "/" + string.Join("/", pathParts.Take(pathParts.Length - 1));
+                
             var fileName = pathParts.Last();
 
-            var parentNode = string.IsNullOrEmpty(parentPath) ? _root : FindNode(parentPath);
+            var parentNode = parentPath == "/" ? _root : FindNode(parentPath);
             if (parentNode == null || parentNode.IsFile)
                 return false;
 
@@ -103,7 +108,7 @@ public class FileTree
             if (pathParts.Length <= 1)
                 return _root;
 
-            var parentPath = string.Join("/", pathParts.Take(pathParts.Length - 1));
+            var parentPath = "/" + string.Join("/", pathParts.Take(pathParts.Length - 1));
             return FindNode(parentPath);
         }
         catch (Exception)
@@ -154,10 +159,8 @@ public class FileTree
             if (destParent == null || destParent.IsFile)
                 return false;
 
-            // Remove from current parent
             if (sourceNode.Parent?.RemoveChild(sourceNode.Name) == true)
             {
-                // Add to new parent
                 var pathParts = SplitPath(destinationPath);
                 var newName = pathParts.Last();
                 sourceNode.Name = newName;
@@ -196,7 +199,6 @@ public class FileTree
             else
             {
                 newNode = FileNode.CreateDirectory(newName);
-                // Recursively copy children
                 CopyChildren(sourceNode, newNode);
             }
 
@@ -229,11 +231,16 @@ public class FileTree
     private FileNode? FindParentNode(string path)
     {
         var pathParts = SplitPath(path);
-        if (pathParts.Length <= 1)
+        if (pathParts.Length == 0)
             return _root;
 
-        var parentPath = string.Join("/", pathParts.Take(pathParts.Length - 1));
-        return string.IsNullOrEmpty(parentPath) ? _root : FindNode(parentPath);
+        var parentPath = "/" + string.Join("/", pathParts.Take(pathParts.Length - 1));
+        
+        // Handle root case
+        if (parentPath == "/")
+            return _root;
+            
+        return FindNode(parentPath);
     }
 
     private string[] SplitPath(string path)

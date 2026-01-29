@@ -8,9 +8,10 @@ using DS_OS.Logger;
 
 namespace DS_OS.Engine.ProcessExecutor;
 
-public class ProcessExecutor(IDataBaseManager dataBaseManager, IProcessManager processManager,IFileManager fileManager, ILogger logger) : IProcessExecutor
+public class ProcessExecutor(IDataBaseManager dataBaseManager, IProcessManager processManager,IFileManager fileManager, ILogger logger,ILogger fileLogger) : IProcessExecutor
 {
     private readonly ILogger _logger = logger;
+    private readonly ILogger _fileLogger = fileLogger;
     private readonly IDataBaseManager _db = dataBaseManager;
     private readonly IProcessManager _pm = processManager;
     private readonly IFileManager _fm = fileManager;
@@ -43,37 +44,46 @@ public class ProcessExecutor(IDataBaseManager dataBaseManager, IProcessManager p
 
     private void Execute(Pcb? process)
     {
-        if (process != null)
+        try
         {
-            if (_pm.CheckFileExist(process).Result)
+            if (process != null)
             {
-                process.State = State.Running;
-                process.RemaningTime -= 1;
-                process.RunedQuantum += 1;
-                if (process.RemaningTime > 0)
+                if (_pm.CheckFileExist(process).Result)
                 {
-                    _pm.TimeOut(process);
+                    process.State = State.Running;
+                    process.RemaningTime -= 1;
+                    process.RunedQuantum += 1;
+                    if (process.RemaningTime > 0)
+                    {
+                        _pm.TimeOut(process);
+                    }
+                    else
+                    {
+
+                        _db.DeleteProcess(process);
+                        _pm.CheckReadyLimit();
+                    }
+                    messages.Add(process.Pid + "  | " + nameof(LongType.EXECUTED));
                 }
                 else
                 {
-                    
-                    _db.DeleteProcess(process);
-                    _pm.CheckReadyLimit();
+                    if (process.WaitReason == WaitReason.File)
+                    {
+                        messages.Add(process.Pid + "  | " + nameof(LongType.WATING_FILE));
+                    }
                 }
-                messages.Add(process.Pid + "  | "+nameof(LongType.EXECUTED));
             }
             else
             {
-                if (process.WaitReason == WaitReason.File)
-                {
-                    messages.Add(process.Pid + "  | " + nameof(LongType.WATING_FILE));
-                }
+                //the None output implement here
             }
         }
-        else
+        catch (Exception e)
         {
-            //the None output implement here
+            messages.Add(process.Pid + "  | " + nameof(LongType.ERROR));
         }
+
+        
     }
 
     private Pcb? GetProcess()
@@ -93,8 +103,9 @@ public class ProcessExecutor(IDataBaseManager dataBaseManager, IProcessManager p
     public bool End()
     {
         _runState = false;
-        logger.SaveLog();
-        logger.Log(LongType.SHUTDOWN.ToString());
+        _logger.SaveLog();
+        _logger.Log(LongType.SHUTDOWN.ToString());
+        _fileLogger.Log(_fm.GetAllFilesRecursive("/"));
         return true;
     }
 

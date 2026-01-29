@@ -20,6 +20,7 @@ public interface IFileManager
     IEnumerable<FileNode> ListDirectory(string path);
     IEnumerable<FileNode> GetFiles(string path);
     IEnumerable<FileNode> GetDirectories(string path);
+    IEnumerable<FileNode> GetAllFilesRecursive(string path);
     
     // File/Directory Manipulation
     bool Move(string sourcePath, string destinationPath);

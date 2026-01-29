@@ -9,6 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include=".github\ISSUE_TEMPLATE\bug_report.md" />
+    <None Include=".github\ISSUE_TEMPLATE\feature_request.md" />
+    <None Include=".github\pull_request_template.md" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Logs\Logs.csproj" />
   </ItemGroup>
 

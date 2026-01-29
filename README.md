@@ -502,7 +502,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## ?? Authors
 
-- **Amir Hossein Khazaei** - *Initial work* - [@ahk1384](https://github.com/ahk1384)
+- **Amir Hossein Karimi** - *Initial work* - [@ahk1384](https://github.com/ahk1384)
 
 ## ?? Acknowledgments
 
